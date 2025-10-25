@@ -1,12 +1,21 @@
 import React, { useState } from 'react';
 import { Edit2, Settings, Link } from 'lucide-react';
+import { MyPredictions } from './MyPredictions';
+import { UserPrediction } from '../types';
 
 interface ProfileSectionProps {
   userName: string;
   setUserName: (name: string) => void;
+  userPredictions: UserPrediction[];
+  onEditPrediction: (prediction: UserPrediction) => void;
 }
 
-export const ProfileSection: React.FC<ProfileSectionProps> = ({ userName, setUserName }) => {
+export const ProfileSection: React.FC<ProfileSectionProps> = ({
+  userName,
+  setUserName,
+  userPredictions,
+  onEditPrediction
+}) => {
   const [isEditingName, setIsEditingName] = useState(false);
   const [newUserName, setNewUserName] = useState(userName);
 
@@ -17,6 +26,12 @@ export const ProfileSection: React.FC<ProfileSectionProps> = ({ userName, setUse
 
   return (
     <div className="space-y-4">
+      {/* 我的預測區塊 */}
+      <MyPredictions
+        predictions={userPredictions}
+        onEditPrediction={onEditPrediction}
+      />
+
       {/* 個人資訊卡片 */}
       <div className="bg-gray-800 rounded-lg shadow-md p-4 border border-gray-700">
         <div className="text-center mb-4">

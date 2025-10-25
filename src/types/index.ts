@@ -68,3 +68,39 @@ export interface ChatRoom {
 export interface LeagueOptions {
   [key: string]: { value: string; label: string; }[];
 }
+
+// 預測類型
+export type PredictionType = 'spread' | 'moneyline' | 'totals' | 'oddEven';
+
+// 單一預測選項
+export interface BetOption {
+  id: string;
+  type: PredictionType;
+  label: string;           // 例如：湖人 -3.5
+  value: string;           // 例如：home_-3.5
+  odds: number;            // 賠率，例如：1.95
+}
+
+// 使用者的預測記錄
+export interface UserPrediction {
+  id: string;
+  matchId: number;
+  match: ScoreData;        // 關聯的賽事
+  predictions: {           // 使用者在這場比賽的預測
+    type: PredictionType;
+    option: BetOption;
+  }[];
+  createdAt: string;       // 預測時間
+  status: 'pending' | 'live' | 'finished';  // 預測狀態
+  result?: {               // 預測結果（比賽結束後才有）
+    type: PredictionType;
+    isCorrect: boolean;
+  }[];
+}
+
+// 勝率統計
+export interface WinRateStats {
+  total: number;           // 總預測數
+  correct: number;         // 命中數
+  winRate: number;         // 勝率百分比
+}

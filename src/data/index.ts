@@ -8,9 +8,9 @@ const getDateKey = (offset: number): string => {
 };
 
 export const dateKeys = {
-  yesterday: getDateKey(-1),
   today: getDateKey(0),
-  tomorrow: getDateKey(1)
+  tomorrow: getDateKey(1),
+  dayAfterTomorrow: getDateKey(2)
 };
 
 export const analysisData: Analysis[] = [
@@ -86,7 +86,7 @@ export const analysisData: Analysis[] = [
     likes: 45,
     time: "8小時前",
     tags: ["MLB", "大小分", "投手戰"],
-    matchDate: dateKeys.yesterday,
+    matchDate: dateKeys.dayAfterTomorrow,
     isRecommended: false,
     matchId: 5
   }
@@ -158,18 +158,18 @@ export const scoresData: ScoreData[] = [
     id: 3,
     sport: "NBA",
     league: "美國職籃",
-    homeTeam: "湖人",
-    awayTeam: "勇士",
-    homeLogo: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Los_Angeles_Lakers_logo.svg/250px-Los_Angeles_Lakers_logo.svg.png",
-    awayLogo: "https://upload.wikimedia.org/wikipedia/zh/d/da/Golden_State_Warriors.png",
-    homeScore: 115,
-    awayScore: 110,
-    status: "final",
-    time: "Final",
-    date: dateKeys.yesterday,
-    spread: "湖人 -4.5",
+    homeTeam: "公鹿",
+    awayTeam: "熱火",
+    homeLogo: "https://upload.wikimedia.org/wikipedia/en/thumb/4/4a/Milwaukee_Bucks_logo.svg/1200px-Milwaukee_Bucks_logo.svg.png",
+    awayLogo: "https://upload.wikimedia.org/wikipedia/en/thumb/f/fb/Miami_Heat_logo.svg/1200px-Miami_Heat_logo.svg.png",
+    homeScore: 0,
+    awayScore: 0,
+    status: "scheduled",
+    time: "19:30",
+    date: dateKeys.dayAfterTomorrow,
+    spread: "公鹿 -4.5",
     prediction: {
-      option: "湖人 -4.5",
+      option: "公鹿 -4.5",
       percentage: 65
     }
   },
@@ -200,11 +200,11 @@ export const scoresData: ScoreData[] = [
     awayTeam: "教士",
     homeLogo: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Los_Angeles_Dodgers_Logo.svg/1158px-Los_Angeles_Dodgers_Logo.svg.png",
     awayLogo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/San_Diego_Padres_logo.svg/250px-San_Diego_Padres_logo.svg.png",
-    homeScore: 4,
-    awayScore: 3,
-    status: "final",
-    time: "Final",
-    date: dateKeys.yesterday,
+    homeScore: 0,
+    awayScore: 0,
+    status: "scheduled",
+    time: "02:10",
+    date: dateKeys.dayAfterTomorrow,
     spread: "小8.5分",
     prediction: {
       option: "小8.5分",

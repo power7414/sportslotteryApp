@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { AnalysisSection } from './components/AnalysisSection';
 import { AnalysisDetail } from './components/AnalysisDetail';
 import { ScoresSection } from './components/ScoresSection';
+import { ScoreDetail } from './components/ScoreDetail';
 import { GroupSection } from './components/GroupSection';
 import { ProfileSection } from './components/ProfileSection';
 import { Header } from './components/Header';
@@ -10,7 +11,7 @@ import { ContextMenu } from './components/ContextMenu';
 import { Keyboard } from './components/Keyboard';
 import { NotificationPanel } from './components/NotificationPanel';
 import { keyboardKeys, notificationsData } from './data';
-import { Analysis } from './types';
+import { Analysis, ScoreData, UserPrediction, PredictionType, BetOption } from './types';
 
 const SportsApp = () => {
   const [activeTab, setActiveTab] = useState('analysis');
@@ -24,6 +25,8 @@ const SportsApp = () => {
   const [notifications, setNotifications] = useState(notificationsData);
   const [showNotifications, setShowNotifications] = useState(false);
   const [selectedAnalysis, setSelectedAnalysis] = useState<Analysis | null>(null);
+  const [selectedScore, setSelectedScore] = useState<ScoreData | null>(null);
+  const [userPredictions, setUserPredictions] = useState<UserPrediction[]>([]);
 
   // 計算是否有未讀通知
   const hasNotifications = notifications.some(n => !n.isRead);
@@ -53,6 +56,29 @@ const SportsApp = () => {
     console.log('點擊通知:', id);
   };
 
+  const handleSubmitPrediction = (score: ScoreData, predictions: { type: PredictionType; option: BetOption }[]) => {
+    const existingPredictionIndex = userPredictions.findIndex(p => p.matchId === score.id);
+
+    const newPrediction: UserPrediction = {
+      id: existingPredictionIndex >= 0 ? userPredictions[existingPredictionIndex].id : `pred_${Date.now()}`,
+      matchId: score.id,
+      match: score,
+      predictions: predictions,
+      createdAt: new Date().toISOString(),
+      status: score.status
+    };
+
+    if (existingPredictionIndex >= 0) {
+      // 更新現有預測
+      setUserPredictions(prev =>
+        prev.map((p, i) => i === existingPredictionIndex ? newPrediction : p)
+      );
+    } else {
+      // 新增預測
+      setUserPredictions(prev => [...prev, newPrediction]);
+    }
+  };
+
   const renderContent = () => {
     // 如果有選中的分析，顯示詳細頁面
     if (selectedAnalysis) {
@@ -60,6 +86,19 @@ const SportsApp = () => {
         <AnalysisDetail
           analysis={selectedAnalysis}
           onBack={() => setSelectedAnalysis(null)}
+        />
+      );
+    }
+
+    // 如果有選中的賽事，顯示預測頁面
+    if (selectedScore) {
+      const existingPrediction = userPredictions.find(p => p.matchId === selectedScore.id);
+      return (
+        <ScoreDetail
+          score={selectedScore}
+          onBack={() => setSelectedScore(null)}
+          onSubmitPrediction={(predictions) => handleSubmitPrediction(selectedScore, predictions)}
+          existingPredictions={existingPrediction?.predictions}
         />
       );
     }
@@ -74,7 +113,7 @@ const SportsApp = () => {
           />
         );
       case 'scores':
-        return <ScoresSection />;
+        return <ScoresSection onScoreClick={(score) => setSelectedScore(score)} />;
       case 'group':
         return (
           <GroupSection
@@ -93,6 +132,8 @@ const SportsApp = () => {
           <ProfileSection
             userName={userName}
             setUserName={setUserName}
+            userPredictions={userPredictions}
+            onEditPrediction={(prediction) => setSelectedScore(prediction.match)}
           />
         );
       default:

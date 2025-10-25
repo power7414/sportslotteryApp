@@ -3,9 +3,10 @@ import { ScoreData } from '../types';
 
 interface ScoreCardProps {
   score: ScoreData;
+  onClick?: () => void;
 }
 
-export const ScoreCard: React.FC<ScoreCardProps> = ({ score }) => {
+export const ScoreCard: React.FC<ScoreCardProps> = ({ score, onClick }) => {
   const getStatusClass = (status: string) => {
     switch (status) {
       case 'live':
@@ -20,7 +21,10 @@ export const ScoreCard: React.FC<ScoreCardProps> = ({ score }) => {
   };
 
   return (
-    <div className="bg-gray-800 rounded-lg shadow-md p-4 mb-4 border border-gray-700">
+    <div
+      onClick={onClick}
+      className="bg-gray-800 rounded-lg shadow-md p-4 mb-4 border border-gray-700 cursor-pointer transition-transform hover:scale-[1.02]"
+    >
       {/* 聯盟 & 狀態 */}
       <div className="flex items-center justify-between mb-3 text-sm">
         <div className="flex items-center space-x-2">

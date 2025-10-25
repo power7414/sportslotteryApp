@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { ScoreCard } from './ScoreCard';
 import { scoresData, sportOptions, leagueOptions, dateKeys } from '../data';
+import { ScoreData } from '../types';
 
 const dateOptions = [
-  { key: dateKeys.yesterday, label: '昨天' },
   { key: dateKeys.today, label: '今天' },
   { key: dateKeys.tomorrow, label: '明天' },
+  { key: dateKeys.dayAfterTomorrow, label: '後天' },
 ];
 
-export const ScoresSection: React.FC = () => {
+interface ScoresSectionProps {
+  onScoreClick: (score: ScoreData) => void;
+}
+
+export const ScoresSection: React.FC<ScoresSectionProps> = ({ onScoreClick }) => {
   const [selectedDate, setSelectedDate] = useState(dateKeys.today);
   const [selectedSport, setSelectedSport] = useState('all');
   const [selectedLeague, setSelectedLeague] = useState('all');
@@ -93,7 +98,11 @@ export const ScoresSection: React.FC = () => {
       <div className="space-y-4">
         {filteredScoresData.length > 0 ? (
           filteredScoresData.map(score => (
-            <ScoreCard key={score.id} score={score} />
+            <ScoreCard
+              key={score.id}
+              score={score}
+              onClick={() => onScoreClick(score)}
+            />
           ))
         ) : (
           <div className="text-center py-8 text-gray-400">
