@@ -358,13 +358,18 @@ const SportsApp = () => {
   const handleSubmitPrediction = (score: ScoreData, predictions: { type: PredictionType; option: BetOption }[]) => {
     const existingPredictionIndex = userPredictions.findIndex(p => p.matchId === score.id);
 
+    // 將 ScoreData status 轉換為 UserPrediction status
+    const predictionStatus: 'pending' | 'live' | 'finished' =
+      score.status === 'scheduled' ? 'pending' :
+      score.status === 'live' ? 'live' : 'finished';
+
     const newPrediction: UserPrediction = {
       id: existingPredictionIndex >= 0 ? userPredictions[existingPredictionIndex].id : `pred_${Date.now()}`,
       matchId: score.id,
       match: score,
       predictions: predictions,
       createdAt: new Date().toISOString(),
-      status: score.status
+      status: predictionStatus
     };
 
     if (existingPredictionIndex >= 0) {

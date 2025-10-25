@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, TrendingUp, MessageCircle, Users } from 'lucide-react';
+import { X, TrendingUp, MessageCircle, Users, Bell } from 'lucide-react';
 
 interface Notification {
   id: number;

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { UserPrediction, WinRateStats } from '../types';
 import { dateKeys } from '../data';
-import { TrendingUp, TrendingDown, Minus, Edit2, Check, X } from 'lucide-react';
+import { Minus, Edit2, Check, X } from 'lucide-react';
 
 interface MyPredictionsProps {
   predictions: UserPrediction[];
