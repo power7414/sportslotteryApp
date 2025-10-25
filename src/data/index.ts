@@ -1,4 +1,17 @@
-import { Analysis, GroupMessageData, SportOption } from '../types';
+import { Analysis, GroupMessageData, SportOption, ScoreData, ChatRoom, LeagueOptions } from '../types';
+
+// 日期計算輔助函數
+const getDateKey = (offset: number): string => {
+  const date = new Date();
+  date.setDate(date.getDate() + offset);
+  return date.toISOString().split('T')[0];
+};
+
+export const dateKeys = {
+  yesterday: getDateKey(-1),
+  today: getDateKey(0),
+  tomorrow: getDateKey(1)
+};
 
 export const analysisData: Analysis[] = [
   {
@@ -15,7 +28,10 @@ export const analysisData: Analysis[] = [
     views: 1250,
     likes: 89,
     time: "2小時前",
-    tags: ["NBA", "讓分", "主客場"]
+    tags: ["NBA", "讓分", "主客場"],
+    matchDate: dateKeys.today,
+    isRecommended: true,
+    matchId: 1
   },
   {
     id: 2,
@@ -31,7 +47,10 @@ export const analysisData: Analysis[] = [
     views: 890,
     likes: 67,
     time: "4小時前",
-    tags: ["英超", "大小球", "戰術"]
+    tags: ["英超", "大小球", "戰術"],
+    matchDate: dateKeys.today,
+    isRecommended: false,
+    matchId: 4
   },
   {
     id: 3,
@@ -47,7 +66,10 @@ export const analysisData: Analysis[] = [
     views: 2100,
     likes: 156,
     time: "6小時前",
-    tags: ["NBA", "數據分析", "三分球"]
+    tags: ["NBA", "數據分析", "三分球"],
+    matchDate: dateKeys.tomorrow,
+    isRecommended: true,
+    matchId: 2
   },
   {
     id: 4,
@@ -63,7 +85,10 @@ export const analysisData: Analysis[] = [
     views: 650,
     likes: 45,
     time: "8小時前",
-    tags: ["MLB", "大小分", "投手戰"]
+    tags: ["MLB", "大小分", "投手戰"],
+    matchDate: dateKeys.yesterday,
+    isRecommended: false,
+    matchId: 5
   }
 ];
 
@@ -88,3 +113,167 @@ export const keyboardKeys: string[][] = [
   ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
   ['Z', 'X', 'C', 'V', 'B', 'N', 'M']
 ];
+
+// 賽事比分資料
+export const scoresData: ScoreData[] = [
+  {
+    id: 1,
+    sport: "NBA",
+    league: "美國職籃",
+    homeTeam: "湖人",
+    awayTeam: "勇士",
+    homeLogo: "🏀",
+    awayLogo: "🏀",
+    homeScore: 108,
+    awayScore: 102,
+    status: "live",
+    time: "Q3 5:32",
+    date: dateKeys.today,
+    spread: "湖人 -3.5",
+    prediction: {
+      option: "湖人 -3.5",
+      percentage: 68
+    }
+  },
+  {
+    id: 2,
+    sport: "NBA",
+    league: "美國職籃",
+    homeTeam: "快艇",
+    awayTeam: "太陽",
+    homeLogo: "🏀",
+    awayLogo: "🏀",
+    homeScore: 0,
+    awayScore: 0,
+    status: "scheduled",
+    time: "21:00",
+    date: dateKeys.tomorrow,
+    spread: "快艇 -5.5",
+    prediction: {
+      option: "快艇 -5.5",
+      percentage: 72
+    }
+  },
+  {
+    id: 3,
+    sport: "NBA",
+    league: "美國職籃",
+    homeTeam: "公鹿",
+    awayTeam: "熱火",
+    homeLogo: "🏀",
+    awayLogo: "🏀",
+    homeScore: 115,
+    awayScore: 110,
+    status: "final",
+    time: "Final",
+    date: dateKeys.yesterday,
+    spread: "公鹿 -4.5",
+    prediction: {
+      option: "公鹿 -4.5",
+      percentage: 65
+    }
+  },
+  {
+    id: 4,
+    sport: "足球",
+    league: "英超",
+    homeTeam: "曼城",
+    awayTeam: "阿森納",
+    homeLogo: "⚽",
+    awayLogo: "⚽",
+    homeScore: 2,
+    awayScore: 1,
+    status: "live",
+    time: "78'",
+    date: dateKeys.today,
+    spread: "大2.5球",
+    prediction: {
+      option: "大2.5球",
+      percentage: 58
+    }
+  },
+  {
+    id: 5,
+    sport: "棒球",
+    league: "MLB",
+    homeTeam: "道奇",
+    awayTeam: "教士",
+    homeLogo: "⚾",
+    awayLogo: "⚾",
+    homeScore: 4,
+    awayScore: 3,
+    status: "final",
+    time: "Final",
+    date: dateKeys.yesterday,
+    spread: "小8.5分",
+    prediction: {
+      option: "小8.5分",
+      percentage: 62
+    }
+  }
+];
+
+// 聊天室資料
+export const chatRoomsData: ChatRoom[] = [
+  {
+    id: 1,
+    name: "NBA討論區",
+    avatar: "🏀",
+    lastMessage: "湖人今晚穩了",
+    lastTime: "10:42",
+    unread: 5,
+    members: 1250
+  },
+  {
+    id: 2,
+    name: "足球分析群",
+    avatar: "⚽",
+    lastMessage: "曼城進攻太猛了",
+    lastTime: "10:35",
+    unread: 0,
+    members: 890
+  },
+  {
+    id: 3,
+    name: "棒球同好會",
+    avatar: "⚾",
+    lastMessage: "道奇投手表現優秀",
+    lastTime: "昨天",
+    unread: 0,
+    members: 456
+  },
+  {
+    id: 4,
+    name: "新手交流區",
+    avatar: "🔰",
+    lastMessage: "有人能教我怎麼看盤嗎？",
+    lastTime: "09:20",
+    unread: 12,
+    members: 2340
+  }
+];
+
+// 聯盟選項
+export const leagueOptions: LeagueOptions = {
+  'NBA': [
+    { value: 'all', label: '全部聯盟' },
+    { value: '美國職籃', label: '美國職籃' }
+  ],
+  '足球': [
+    { value: 'all', label: '全部聯盟' },
+    { value: '英超', label: '英超' },
+    { value: '西甲', label: '西甲' },
+    { value: '德甲', label: '德甲' },
+    { value: '意甲', label: '意甲' }
+  ],
+  '棒球': [
+    { value: 'all', label: '全部聯盟' },
+    { value: 'MLB', label: 'MLB' },
+    { value: '中華職棒', label: '中華職棒' }
+  ],
+  '網球': [
+    { value: 'all', label: '全部聯盟' },
+    { value: 'ATP', label: 'ATP' },
+    { value: 'WTA', label: 'WTA' }
+  ]
+};
