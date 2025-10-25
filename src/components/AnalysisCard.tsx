@@ -1,20 +1,22 @@
 import React from 'react';
-import { Star, Eye, ThumbsUp, Share2, Award } from 'lucide-react';
+import { Star, ThumbsUp, Share2, Award } from 'lucide-react';
 import { Analysis } from '../types';
 import { AnalysisGamePreview } from './AnalysisGamePreview';
 import { scoresData } from '../data';
 
 interface AnalysisCardProps {
   analysis: Analysis;
+  onClick?: () => void;
 }
 
-export const AnalysisCard: React.FC<AnalysisCardProps> = ({ analysis }) => {
+export const AnalysisCard: React.FC<AnalysisCardProps> = ({ analysis, onClick }) => {
   // 根據 analysis.matchId 找到對應的賽事資料
   const match = scoresData.find(s => s.id === analysis.matchId);
 
   return (
     <div
-      className={`relative rounded-lg shadow-md p-4 mb-4
+      onClick={onClick}
+      className={`relative rounded-lg shadow-md p-4 mb-4 cursor-pointer transition-transform hover:scale-[1.02]
         ${analysis.isRecommended
           ? 'bg-gradient-to-br from-gray-800 to-gray-900 border-2 border-yellow-500'
           : 'bg-gray-800 border border-gray-700'
@@ -67,10 +69,6 @@ export const AnalysisCard: React.FC<AnalysisCardProps> = ({ analysis }) => {
           <div className="flex items-center space-x-1">
             <Star className="w-4 h-4 text-yellow-500" />
             <span>{analysis.rating}</span>
-          </div>
-          <div className="flex items-center space-x-1">
-            <Eye className="w-4 h-4" />
-            <span>{analysis.views}</span>
           </div>
           <div className="flex items-center space-x-1">
             <ThumbsUp className="w-4 h-4" />

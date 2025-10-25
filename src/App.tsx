@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { AnalysisSection } from './components/AnalysisSection';
+import { AnalysisDetail } from './components/AnalysisDetail';
 import { ScoresSection } from './components/ScoresSection';
 import { GroupSection } from './components/GroupSection';
 import { ProfileSection } from './components/ProfileSection';
@@ -9,6 +10,7 @@ import { ContextMenu } from './components/ContextMenu';
 import { Keyboard } from './components/Keyboard';
 import { NotificationPanel } from './components/NotificationPanel';
 import { keyboardKeys, notificationsData } from './data';
+import { Analysis } from './types';
 
 const SportsApp = () => {
   const [activeTab, setActiveTab] = useState('analysis');
@@ -21,6 +23,7 @@ const SportsApp = () => {
   const [activeChatRoom, setActiveChatRoom] = useState<number | null>(null);
   const [notifications, setNotifications] = useState(notificationsData);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [selectedAnalysis, setSelectedAnalysis] = useState<Analysis | null>(null);
 
   // 計算是否有未讀通知
   const hasNotifications = notifications.some(n => !n.isRead);
@@ -51,12 +54,23 @@ const SportsApp = () => {
   };
 
   const renderContent = () => {
+    // 如果有選中的分析，顯示詳細頁面
+    if (selectedAnalysis) {
+      return (
+        <AnalysisDetail
+          analysis={selectedAnalysis}
+          onBack={() => setSelectedAnalysis(null)}
+        />
+      );
+    }
+
     switch (activeTab) {
       case 'analysis':
         return (
           <AnalysisSection
             selectedSport={selectedSport}
             setSelectedSport={setSelectedSport}
+            onAnalysisClick={(analysis) => setSelectedAnalysis(analysis)}
           />
         );
       case 'scores':

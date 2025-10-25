@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { AnalysisCard } from './AnalysisCard';
 import { analysisData, sportOptions, dateKeys } from '../data';
+import { Analysis } from '../types';
 
 const dateOptions = [
   { key: dateKeys.yesterday, label: '昨天' },
@@ -11,11 +12,13 @@ const dateOptions = [
 interface AnalysisSectionProps {
   selectedSport: string;
   setSelectedSport: (sport: string) => void;
+  onAnalysisClick: (analysis: Analysis) => void;
 }
 
 export const AnalysisSection: React.FC<AnalysisSectionProps> = ({
   selectedSport,
-  setSelectedSport
+  setSelectedSport,
+  onAnalysisClick
 }) => {
   const [selectedDate, setSelectedDate] = useState(dateKeys.today);
 
@@ -70,7 +73,11 @@ export const AnalysisSection: React.FC<AnalysisSectionProps> = ({
       <div className="space-y-4">
         {filteredAnalysisData.length > 0 ? (
           filteredAnalysisData.map(analysis => (
-            <AnalysisCard key={analysis.id} analysis={analysis} />
+            <AnalysisCard
+              key={analysis.id}
+              analysis={analysis}
+              onClick={() => onAnalysisClick(analysis)}
+            />
           ))
         ) : (
           <div className="text-center py-8 text-gray-400">
