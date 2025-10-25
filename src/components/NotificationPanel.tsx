@@ -42,12 +42,12 @@ export const NotificationPanel: React.FC<NotificationPanelProps> = ({
     <>
       {/* 背景遮罩 */}
       <div
-        className="fixed inset-0 bg-black bg-opacity-50 z-40"
+        className="absolute inset-0 bg-black bg-opacity-50 z-40"
         onClick={onClose}
       />
 
       {/* 通知面板 */}
-      <div className="fixed top-0 right-0 w-full max-w-md h-full bg-gray-800 shadow-lg z-50 transform transition-transform duration-300">
+      <div className="absolute top-0 right-0 w-full h-full bg-gray-800 shadow-lg z-50 transform transition-transform duration-300">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-700">
           <h2 className="text-lg font-bold text-gray-100">通知</h2>
