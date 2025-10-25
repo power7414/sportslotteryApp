@@ -4,7 +4,8 @@ import { AnalysisDetail } from './components/AnalysisDetail';
 import { ScoresSection } from './components/ScoresSection';
 import { ScoreDetail } from './components/ScoreDetail';
 import { GroupSection } from './components/GroupSection';
-import { ProfileSection } from './components/ProfileSection';
+import { MyPredictionsSection } from './components/MyPredictionsSection';
+import { ProfileMenu } from './components/ProfileMenu';
 import { Header } from './components/Header';
 import { BottomNavigation } from './components/BottomNavigation';
 import { ContextMenu } from './components/ContextMenu';
@@ -27,6 +28,7 @@ const SportsApp = () => {
   const [selectedAnalysis, setSelectedAnalysis] = useState<Analysis | null>(null);
   const [selectedScore, setSelectedScore] = useState<ScoreData | null>(null);
   const [userPredictions, setUserPredictions] = useState<UserPrediction[]>([]);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
 
   // 計算是否有未讀通知
   const hasNotifications = notifications.some(n => !n.isRead);
@@ -127,11 +129,9 @@ const SportsApp = () => {
             setActiveChatRoom={setActiveChatRoom}
           />
         );
-      case 'profile':
+      case 'predictions':
         return (
-          <ProfileSection
-            userName={userName}
-            setUserName={setUserName}
+          <MyPredictionsSection
             userPredictions={userPredictions}
             onEditPrediction={(prediction) => setSelectedScore(prediction.match)}
           />
@@ -147,6 +147,7 @@ const SportsApp = () => {
       <Header
         hasNotifications={hasNotifications}
         onNotificationClick={() => setShowNotifications(true)}
+        onProfileClick={() => setShowProfileMenu(true)}
       />
 
       {/* Notification Panel */}
@@ -155,6 +156,14 @@ const SportsApp = () => {
         onClose={() => setShowNotifications(false)}
         notifications={notifications}
         onNotificationClick={handleNotificationClick}
+      />
+
+      {/* Profile Menu */}
+      <ProfileMenu
+        isOpen={showProfileMenu}
+        onClose={() => setShowProfileMenu(false)}
+        userName={userName}
+        setUserName={setUserName}
       />
 
       {/* Content */}
