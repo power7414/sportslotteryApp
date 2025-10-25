@@ -19,7 +19,13 @@ export const AnalysisGamePreview: React.FC<AnalysisGamePreviewProps> = ({ match 
       <div className="flex items-center justify-between">
         {/* 主隊 */}
         <div className="flex items-center space-x-2 w-2/5">
-          <div className="text-2xl flex-shrink-0">{match.homeLogo}</div>
+          <div className="w-8 h-8 flex-shrink-0 flex items-center justify-center">
+            {match.homeLogo.startsWith('http') ? (
+              <img src={match.homeLogo} alt={match.homeTeam} className="w-full h-full object-contain" />
+            ) : (
+              <span className="text-2xl">{match.homeLogo}</span>
+            )}
+          </div>
           <span className="font-medium text-gray-200 text-sm truncate">{match.homeTeam}</span>
         </div>
 
@@ -38,7 +44,13 @@ export const AnalysisGamePreview: React.FC<AnalysisGamePreviewProps> = ({ match 
         {/* 客隊 */}
         <div className="flex items-center justify-end space-x-2 w-2/5">
           <span className="font-medium text-gray-200 text-sm truncate text-right">{match.awayTeam}</span>
-          <div className="text-2xl flex-shrink-0">{match.awayLogo}</div>
+          <div className="w-8 h-8 flex-shrink-0 flex items-center justify-center">
+            {match.awayLogo.startsWith('http') ? (
+              <img src={match.awayLogo} alt={match.awayTeam} className="w-full h-full object-contain" />
+            ) : (
+              <span className="text-2xl">{match.awayLogo}</span>
+            )}
+          </div>
         </div>
       </div>
     </div>

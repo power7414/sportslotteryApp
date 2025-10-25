@@ -43,7 +43,13 @@ export const ScoreCard: React.FC<ScoreCardProps> = ({ score }) => {
       <div className="flex items-center justify-between mb-4">
         {/* 主隊 */}
         <div className="flex flex-col items-center w-2/5">
-          <div className="text-4xl mb-1">{score.homeLogo}</div>
+          <div className="w-16 h-16 flex items-center justify-center mb-1">
+            {score.homeLogo.startsWith('http') ? (
+              <img src={score.homeLogo} alt={score.homeTeam} className="w-full h-full object-contain" />
+            ) : (
+              <span className="text-4xl">{score.homeLogo}</span>
+            )}
+          </div>
           <span className="font-semibold text-gray-100 text-center">{score.homeTeam}</span>
         </div>
 
@@ -60,7 +66,13 @@ export const ScoreCard: React.FC<ScoreCardProps> = ({ score }) => {
 
         {/* 客隊 */}
         <div className="flex flex-col items-center w-2/5">
-          <div className="text-4xl mb-1">{score.awayLogo}</div>
+          <div className="w-16 h-16 flex items-center justify-center mb-1">
+            {score.awayLogo.startsWith('http') ? (
+              <img src={score.awayLogo} alt={score.awayTeam} className="w-full h-full object-contain" />
+            ) : (
+              <span className="text-4xl">{score.awayLogo}</span>
+            )}
+          </div>
           <span className="font-semibold text-gray-100 text-center">{score.awayTeam}</span>
         </div>
       </div>
