@@ -277,3 +277,39 @@ export const leagueOptions: LeagueOptions = {
     { value: 'WTA', label: 'WTA' }
   ]
 };
+
+// 通知資料
+export const notificationsData = [
+  {
+    id: 1,
+    type: 'analysis' as const,
+    title: '新的推薦分析',
+    content: '籃球專家王大明發布了「湖人 vs 勇士」的深度分析，信心指數 85%',
+    time: '5分鐘前',
+    isRead: false
+  },
+  {
+    id: 2,
+    type: 'message' as const,
+    title: 'NBA 專屬群',
+    content: '運彩高手：今天湖人的分析很不錯！',
+    time: '15分鐘前',
+    isRead: false
+  },
+  {
+    id: 3,
+    type: 'system' as const,
+    title: '賽事提醒',
+    content: '湖人 vs 勇士的比賽將在1小時後開始',
+    time: '30分鐘前',
+    isRead: true
+  },
+  {
+    id: 4,
+    type: 'analysis' as const,
+    title: '分析更新',
+    content: '足球分析師李小華更新了「曼城 vs 阿森納」的預測',
+    time: '1小時前',
+    isRead: true
+  }
+];

@@ -7,7 +7,8 @@ import { Header } from './components/Header';
 import { BottomNavigation } from './components/BottomNavigation';
 import { ContextMenu } from './components/ContextMenu';
 import { Keyboard } from './components/Keyboard';
-import { keyboardKeys } from './data';
+import { NotificationPanel } from './components/NotificationPanel';
+import { keyboardKeys, notificationsData } from './data';
 
 const SportsApp = () => {
   const [activeTab, setActiveTab] = useState('analysis');
@@ -18,7 +19,11 @@ const SportsApp = () => {
   const [isAdmin] = useState(true);
   const [showKeyboard, setShowKeyboard] = useState(false);
   const [activeChatRoom, setActiveChatRoom] = useState<number | null>(null);
-  const [hasNotifications, setHasNotifications] = useState(true);
+  const [notifications, setNotifications] = useState(notificationsData);
+  const [showNotifications, setShowNotifications] = useState(false);
+
+  // 計算是否有未讀通知
+  const hasNotifications = notifications.some(n => !n.isRead);
 
   const handleContextMenu = (e: React.MouseEvent, messageId: number) => {
     e.preventDefault();
@@ -32,6 +37,17 @@ const SportsApp = () => {
   const handleContextMenuAction = (action: string, messageId: number) => {
     alert(`執行動作: ${action} 對訊息 ${messageId}`);
     setContextMenu(null);
+  };
+
+  const handleNotificationClick = (id: number) => {
+    // 標記通知為已讀
+    setNotifications(prev =>
+      prev.map(n => n.id === id ? { ...n, isRead: true } : n)
+    );
+    // 關閉通知面板
+    setShowNotifications(false);
+    // 這裡可以根據通知類型跳轉到對應頁面
+    console.log('點擊通知:', id);
   };
 
   const renderContent = () => {
@@ -75,7 +91,15 @@ const SportsApp = () => {
       {/* Header */}
       <Header
         hasNotifications={hasNotifications}
-        onNotificationClick={() => setHasNotifications(false)}
+        onNotificationClick={() => setShowNotifications(true)}
+      />
+
+      {/* Notification Panel */}
+      <NotificationPanel
+        isOpen={showNotifications}
+        onClose={() => setShowNotifications(false)}
+        notifications={notifications}
+        onNotificationClick={handleNotificationClick}
       />
 
       {/* Content */}
