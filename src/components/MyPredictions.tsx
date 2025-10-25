@@ -9,6 +9,8 @@ interface MyPredictionsProps {
 }
 
 const dateOptions = [
+  { key: dateKeys.dayBeforeYesterday, label: '前天' },
+  { key: dateKeys.yesterday, label: '昨天' },
   { key: dateKeys.today, label: '今天' },
   { key: dateKeys.tomorrow, label: '明天' },
   { key: dateKeys.dayAfterTomorrow, label: '後天' },

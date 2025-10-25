@@ -1,6 +1,6 @@
 import { ArrowLeft, Calendar, Clock, Check } from 'lucide-react';
 import { ScoreData, BetOption, PredictionType } from '../types';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 interface ScoreDetailProps {
   score: ScoreData;
@@ -14,6 +14,11 @@ export function ScoreDetail({ score, onBack, onSubmitPrediction, existingPredict
   const [selectedOptions, setSelectedOptions] = useState<Map<PredictionType, BetOption>>(
     new Map(existingPredictions.map(p => [p.type, p.option]))
   );
+
+  // 控制提交按鈕顯示/隱藏
+  const [showSubmitButton, setShowSubmitButton] = useState(true);
+  const lastScrollY = useRef(0);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   // 生成預測選項
   const generateBetOptions = (): { [key in PredictionType]: BetOption[] } => {
@@ -118,13 +123,45 @@ export function ScoreDetail({ score, onBack, onSubmitPrediction, existingPredict
     onBack();
   };
 
+  // 監聽滾動事件
+  useEffect(() => {
+    const handleScroll = () => {
+      const container = scrollContainerRef.current;
+      if (!container) return;
+
+      const currentScrollY = container.scrollTop;
+
+      // 向下滾動時隱藏按鈕，向上滾動時顯示按鈕
+      if (currentScrollY > lastScrollY.current && currentScrollY > 100) {
+        // 向下滾動且超過 100px
+        setShowSubmitButton(false);
+      } else if (currentScrollY < lastScrollY.current) {
+        // 向上滾動
+        setShowSubmitButton(true);
+      }
+
+      lastScrollY.current = currentScrollY;
+    };
+
+    const container = scrollContainerRef.current;
+    if (container) {
+      container.addEventListener('scroll', handleScroll, { passive: true });
+      return () => container.removeEventListener('scroll', handleScroll);
+    }
+  }, []);
+
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
     return `${date.getMonth() + 1}/${date.getDate()}`;
   };
 
   return (
-    <div className="absolute inset-0 bg-gray-900 z-50 overflow-y-auto pb-24">
+    <div className="absolute inset-0 bg-gray-900 z-50 flex flex-col">
+      {/* 可滾動內容區域 */}
+      <div
+        ref={scrollContainerRef}
+        className="flex-1 overflow-y-auto"
+      >
       {/* 頂部導航 */}
       <div className="sticky top-0 bg-gray-800 border-b border-gray-700 px-4 py-3 flex items-center gap-3 z-10">
         <button
@@ -330,9 +367,14 @@ export function ScoreDetail({ score, onBack, onSubmitPrediction, existingPredict
           </ul>
         </div>
       </div>
+      </div>
 
-      {/* 底部提交按鈕 */}
-      <div className="fixed bottom-0 left-0 right-0 bg-gray-800 border-t border-gray-700 px-4 py-3">
+      {/* 底部提交按鈕 - 固定在最底部，滾動時隱藏/顯示 */}
+      <div
+        className={`bg-gray-800 border-t border-gray-700 px-4 py-3 transition-transform duration-300 ${
+          showSubmitButton ? 'translate-y-0' : 'translate-y-full'
+        }`}
+      >
         <button
           onClick={handleSubmit}
           disabled={selectedOptions.size === 0}

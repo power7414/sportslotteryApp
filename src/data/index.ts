@@ -8,9 +8,11 @@ const getDateKey = (offset: number): string => {
 };
 
 export const dateKeys = {
-  today: getDateKey(0),
-  tomorrow: getDateKey(1),
-  dayAfterTomorrow: getDateKey(2)
+  dayBeforeYesterday: getDateKey(-2),  // 前天
+  yesterday: getDateKey(-1),            // 昨天
+  today: getDateKey(0),                 // 今天
+  tomorrow: getDateKey(1),              // 明天
+  dayAfterTomorrow: getDateKey(2)       // 後天
 };
 
 export const analysisData: Analysis[] = [
@@ -236,7 +238,7 @@ export const chatRoomsData: ChatRoom[] = [
   {
     id: 3,
     name: "足球交流區",
-    avatar: "https://upload.wikimedia.org/wikipedia/zh/thumb/f/f2/Premier_League_Logo.svg/1200px-Premier_League_Logo.svg.png",
+    avatar: "https://upload.wikimedia.org/wikipedia/commons/f/f3/Logo_UEFA_Champions_League.png",
     lastMessage: "曼城那場可惜了...",
     lastTime: "昨天",
     unread: 5,
@@ -245,7 +247,7 @@ export const chatRoomsData: ChatRoom[] = [
   {
     id: 4,
     name: "棒球 MLB/CPBL",
-    avatar: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Major_League_Baseball_logo.svg/640px-Major_League_Baseball_logo.svg.png",
+    avatar: "https://i.pinimg.com/1200x/9b/20/5b/9b205bc30c406fdff6e173156594b8cb.jpg",
     lastMessage: "道奇投手狀況不錯",
     lastTime: "昨天",
     unread: 1,

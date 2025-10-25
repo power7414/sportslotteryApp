@@ -23,12 +23,12 @@ export function ProfileMenu({ isOpen, onClose, userName, setUserName }: ProfileM
     <>
       {/* 背景遮罩 */}
       <div
-        className="fixed inset-0 bg-black/50 z-40"
+        className="absolute inset-0 bg-black/50 z-40"
         onClick={onClose}
       />
 
       {/* 側邊選單 */}
-      <div className="fixed top-0 right-0 h-full w-80 bg-gray-900 z-50 shadow-xl overflow-y-auto">
+      <div className="absolute top-0 right-0 h-full w-80 bg-gray-900 z-50 shadow-xl overflow-y-auto">
         {/* 頂部關閉按鈕 */}
         <div className="sticky top-0 bg-gray-800 p-4 flex items-center justify-between border-b border-gray-700">
           <h2 className="text-lg font-semibold text-gray-100">個人設定</h2>

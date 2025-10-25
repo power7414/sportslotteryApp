@@ -10,8 +10,9 @@
 ### 專案定位
 這是一個以**社群互動為主**的台灣運彩分析平台，整合了：
 - 專業分析師的運彩預測分享
-- 即時賽事比分追蹤
+- 即時賽事比分追蹤與預測功能
 - 社群聊天室討論
+- 個人化預測記錄與勝率統計
 - 個人化通知系統
 
 ### 目標受眾
@@ -35,7 +36,7 @@
 **核心功能：** 展示專業分析師的運彩預測與分析文章
 
 **主要特性：**
-- **日期篩選**：昨天 / 今天 / 明天
+- **日期篩選**：今天 / 明天 / 後天
 - **運動類型篩選**：NBA / 足球 / 棒球 / 網球
 - **分析卡片顯示**：
   - 分析師資訊（頭像、名稱）
@@ -91,13 +92,14 @@ interface Analysis {
 ---
 
 ### 2️⃣ 賽事專區（ScoresSection）
-**核心功能：** 即時/預定/已結束賽事的比分顯示
+**核心功能：** 即時/預定/已結束賽事的比分顯示與預測功能
 
 **主要特性：**
 - **三層篩選系統**：
-  1. 日期篩選（昨天/今天/明天）
+  1. 日期篩選（今天/明天/後天）
   2. 運動類型篩選（NBA/足球/棒球/網球）
   3. 聯盟篩選（依運動類型動態變化）
+- **點擊進入預測**：點擊賽事卡片進入完整預測頁面
 - **賽事狀態**：
   - `live` - 進行中（紅色 LIVE 標籤 + 跳動動畫）
   - `final` - 已結束
@@ -108,10 +110,33 @@ interface Analysis {
   - 預測資訊（選項 + 百分比進度條）
   - 讓分/盤口資訊
 
+**賽事預測頁面（ScoreDetail）：**
+- **頂部導航**：返回按鈕、賽事標題
+- **賽事資訊卡片**：
+  - 運動類型與聯盟標籤
+  - 對戰隊伍與 Logo
+  - 比分或比賽時間
+  - 日期與時間資訊
+- **四種預測類型**：
+  1. **讓分盤（Spread）**：支持正負讓分，顯示賠率
+  2. **不讓分/獨贏（Moneyline）**：直接預測勝負
+  3. **大小分（Totals）**：預測總分大於或小於指定分數
+  4. **單雙（Odd/Even）**：預測總分為單數或雙數
+- **選擇規則**：
+  - 每種類型只能選擇一個選項
+  - 可同時選擇多種類型
+  - 選中狀態視覺化（藍色邊框 + 勾選圖標）
+  - 顯示每個選項的賠率
+- **預測提示**：說明預測規則與注意事項
+- **底部提交按鈕**：
+  - 顯示已選擇數量
+  - 未選擇時禁用
+  - 支持新增與更新預測
+
 **資料結構：**
 ```typescript
 interface ScoreData {
-  id: string;
+  id: number;
   sport: string;
   league: string;
   homeTeam: string;
@@ -128,6 +153,42 @@ interface ScoreData {
     option: string;      // 預測選項
     percentage: number;  // 預測百分比
   };
+}
+
+// 預測類型
+export type PredictionType = 'spread' | 'moneyline' | 'totals' | 'oddEven';
+
+// 單一預測選項
+export interface BetOption {
+  id: string;
+  type: PredictionType;
+  label: string;           // 例如：湖人 -3.5
+  value: string;           // 例如：home_-3.5
+  odds: number;            // 賠率，例如：1.95
+}
+
+// 使用者的預測記錄
+export interface UserPrediction {
+  id: string;
+  matchId: number;
+  match: ScoreData;        // 關聯的賽事
+  predictions: {           // 使用者在這場比賽的預測
+    type: PredictionType;
+    option: BetOption;
+  }[];
+  createdAt: string;       // 預測時間
+  status: 'pending' | 'live' | 'finished';  // 預測狀態
+  result?: {               // 預測結果（比賽結束後才有）
+    type: PredictionType;
+    isCorrect: boolean;
+  }[];
+}
+
+// 勝率統計
+export interface WinRateStats {
+  total: number;           // 總預測數
+  correct: number;         // 命中數
+  winRate: number;         // 勝率百分比
 }
 ```
 
@@ -150,11 +211,90 @@ const leagueOptions: LeagueOptions = {
 ```
 
 **關聯元件：**
-- `ScoreCard.tsx` - 比分卡片元件
+- `ScoreCard.tsx` - 比分卡片元件（可點擊）
+- `ScoreDetail.tsx` - 賽事預測頁面（全螢幕顯示）
 
 ---
 
-### 3️⃣ 群組專區（GroupSection）
+### 3️⃣ 我的預測（MyPredictionsSection）
+**核心功能：** 顯示使用者的預測記錄與勝率統計
+
+**主要特性：**
+- **勝率統計卡片**：
+  - 歷史勝率（所有時間）
+  - 本月勝率（最近 30 天）
+  - 本週勝率（最近 7 天）
+  - 顯示命中數/總預測數
+- **日期篩選**：今天 / 明天 / 後天
+- **預測記錄列表**：
+  - 賽事資訊（隊伍名稱）
+  - 預測狀態標籤（待開賽/進行中/已結束）
+  - 預測選項詳情（類型、選項、賠率）
+  - 預測結果（命中/未中，僅已結束比賽顯示）
+  - 編輯按鈕（僅待開賽狀態可編輯）
+- **編輯功能**：點擊編輯按鈕返回賽事預測頁面修改預測
+
+**勝率計算邏輯：**
+```typescript
+const calculateWinRate = (preds: UserPrediction[], timeframe: 'all' | 'month' | 'week'): WinRateStats => {
+  // 篩選已結束且有結果的預測
+  let filteredPreds = preds.filter(p => p.status === 'finished' && p.result);
+
+  // 根據時間範圍篩選
+  if (timeframe === 'month') {
+    const oneMonthAgo = new Date();
+    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+    filteredPreds = filteredPreds.filter(p => new Date(p.createdAt) >= oneMonthAgo);
+  } else if (timeframe === 'week') {
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+    filteredPreds = filteredPreds.filter(p => new Date(p.createdAt) >= oneWeekAgo);
+  }
+
+  // 計算總數與命中數
+  const total = filteredPreds.reduce((sum, p) => sum + (p.result?.length || 0), 0);
+  const correct = filteredPreds.reduce(
+    (sum, p) => sum + (p.result?.filter(r => r.isCorrect).length || 0), 0
+  );
+
+  return {
+    total,
+    correct,
+    winRate: total > 0 ? Math.round((correct / total) * 100) : 0
+  };
+};
+```
+
+**關聯元件：**
+- `MyPredictions.tsx` - 預測記錄主元件
+- `MyPredictionsSection.tsx` - 預測頁面包裝元件
+
+**完整預測流程：**
+```
+1. 使用者在賽事專區點擊賽事卡片
+   ↓
+2. 開啟 ScoreDetail 預測頁面
+   ↓
+3. 選擇預測選項（可選擇多種類型，每種類型僅一個選項）
+   ↓
+4. 點擊「提交預測」或「更新預測」
+   ↓
+5. App.tsx 的 handleSubmitPrediction 處理：
+   - 檢查是否為更新（matchId 已存在）
+   - 建立或更新 UserPrediction 物件
+   - 更新 userPredictions 狀態
+   ↓
+6. 返回賽事專區
+   ↓
+7. 前往「我的預測」分頁查看記錄
+   - 查看勝率統計
+   - 依日期篩選預測
+   - 編輯待開賽的預測
+```
+
+---
+
+### 4️⃣ 群組專區（GroupSection）
 **核心功能：** 社群聊天室功能，支援群組討論與訊息管理
 
 **主要特性：**
@@ -207,14 +347,15 @@ interface GroupMessageData {
 
 ---
 
-### 4️⃣ 個人中心（ProfileSection）
-**核心功能：** 使用者個人資料與設定管理
+### 5️⃣ 個人設定選單（ProfileMenu）
+**核心功能：** 使用者個人資料與設定管理，從 Header 頭像按鈕呼叫
 
 **主要特性：**
-- **帳號資訊**：
-  - 使用者名稱（可編輯/儲存）
+- **側滑面板設計**：從右側滑入的設定選單
+- **使用者資訊區**：
   - 頭像顯示
-- **綁定運彩帳號**：
+  - 使用者名稱（可編輯/儲存）
+- **帳號綁定**：
   - 台灣運彩帳號綁定（模擬功能）
 - **通知設定**：
   - 推播通知開關
@@ -224,20 +365,20 @@ interface GroupMessageData {
   - 關於我們
   - 服務條款
   - 隱私政策
-  - 登出
+  - 登出按鈕（紅色警告樣式）
 
-**狀態管理：**
-```typescript
-const [userName, setUserName] = useState('用戶名稱');
-const [isEditingName, setIsEditingName] = useState(false);
-const [pushNotifications, setPushNotifications] = useState(true);
-const [groupAlerts, setGroupAlerts] = useState(true);
-const [analystAlerts, setAnalystAlerts] = useState(false);
-```
+**UI 特點：**
+- 遮罩層點擊關閉
+- 固定於畫面右側
+- 寬度 320px (80 Tailwind units)
+- 支援滾動瀏覽
+
+**關聯元件：**
+- `ProfileMenu.tsx` - 個人設定選單元件
 
 ---
 
-### 5️⃣ 通知系統（NotificationPanel）
+### 6️⃣ 通知系統（NotificationPanel）
 **核心功能：** 即時通知面板，整合各類系統通知
 
 **通知類型：**
@@ -269,18 +410,24 @@ interface Notification {
 
 ---
 
-### 6️⃣ 導航系統
+### 7️⃣ 導航系統
 
 #### 頂部導航（Header）
-- Logo 顯示
-- 通知鈴鐺（顯示未讀數量）
+- **左側**：使用者頭像按鈕（點擊開啟 ProfileMenu）
+- **右側**：通知鈴鐺（顯示未讀數量、點擊開啟 NotificationPanel）
+- **設計理念**：簡潔設計，移除標題文字，專注於功能按鈕
 
 #### 底部導航（BottomNavigation）
 - 分析專區（TrendingUp 圖標）
 - 賽事專區（Trophy 圖標）
 - 群組專區（Users 圖標）
-- 個人中心（User 圖標）
+- **我的預測**（Target 圖標）- 替代原本的個人中心
 - 選中狀態視覺化（藍色高亮）
+
+**導航結構變更說明：**
+- 原本的「個人中心」移至 Header 頭像按鈕
+- 底部導航的第四個位置改為「我的預測」
+- 這樣的設計讓預測功能更易訪問，設定功能保持在傳統的頂部位置
 
 ---
 
@@ -306,17 +453,20 @@ interface Notification {
 │   ├── components/          # React 元件目錄
 │   │   ├── AnalysisSection.tsx       # 分析專區主元件
 │   │   ├── AnalysisCard.tsx          # 分析卡片（可點擊）
-│   │   ├── AnalysisDetail.tsx        # 分析詳細頁面
+│   │   ├── AnalysisDetail.tsx        # 分析詳細頁面（全螢幕）
 │   │   ├── AnalysisGamePreview.tsx   # 賽事預覽
 │   │   ├── ScoresSection.tsx         # 賽事專區主元件
-│   │   ├── ScoreCard.tsx             # 比分卡片
+│   │   ├── ScoreCard.tsx             # 比分卡片（可點擊）
+│   │   ├── ScoreDetail.tsx           # 賽事預測頁面（全螢幕）
+│   │   ├── MyPredictionsSection.tsx  # 我的預測頁面
+│   │   ├── MyPredictions.tsx         # 預測記錄元件
 │   │   ├── GroupSection.tsx          # 群組專區主元件
 │   │   ├── GroupMessage.tsx          # 訊息氣泡
 │   │   ├── ChatRoomList.tsx          # 聊天室列表
 │   │   ├── ChatRoomItem.tsx          # 聊天室項目
-│   │   ├── ProfileSection.tsx        # 個人中心
-│   │   ├── Header.tsx                # 頂部導航
-│   │   ├── BottomNavigation.tsx      # 底部導航
+│   │   ├── ProfileMenu.tsx           # 個人設定選單（側滑面板）
+│   │   ├── Header.tsx                # 頂部導航（頭像+通知）
+│   │   ├── BottomNavigation.tsx      # 底部導航（4個主要分頁）
 │   │   ├── NotificationPanel.tsx     # 通知面板
 │   │   ├── ContextMenu.tsx           # 右鍵選單
 │   │   └── Keyboard.tsx              # 虛擬鍵盤
@@ -342,26 +492,29 @@ interface Notification {
 
 ```
 App (主容器，管理全域狀態)
-├── Header (通知鈴鐺)
-├── NotificationPanel (通知面板 Overlay)
+├── Header (頭像按鈕 + 通知鈴鐺)
+├── NotificationPanel (通知面板 Overlay，條件渲染)
+├── ProfileMenu (個人設定選單，條件渲染)
 ├── 內容區域 (根據狀態動態切換)
 │   ├── AnalysisDetail (當 selectedAnalysis 有值時，全螢幕顯示)
 │   │   └── AnalysisGamePreview
+│   ├── ScoreDetail (當 selectedScore 有值時，全螢幕顯示)
 │   ├── AnalysisSection (activeTab === 'analysis')
-│   │   └── AnalysisCard[] (點擊觸發 onAnalysisClick)
+│   │   └── AnalysisCard[] (點擊觸發 setSelectedAnalysis)
 │   │       └── AnalysisGamePreview
 │   ├── ScoresSection (activeTab === 'scores')
-│   │   └── ScoreCard[]
+│   │   └── ScoreCard[] (點擊觸發 setSelectedScore)
 │   ├── GroupSection (activeTab === 'group')
 │   │   ├── ChatRoomList
 │   │   │   └── ChatRoomItem[]
 │   │   └── 聊天室詳細視圖
 │   │       ├── GroupMessage[]
 │   │       └── 訊息輸入區
-│   └── ProfileSection (activeTab === 'profile')
+│   └── MyPredictionsSection (activeTab === 'predictions')
+│       └── MyPredictions (顯示勝率統計 + 預測記錄)
 ├── Keyboard (虛擬鍵盤，條件渲染)
 ├── ContextMenu (右鍵選單，條件渲染)
-└── BottomNavigation (底部導航)
+└── BottomNavigation (底部導航：分析/賽事/群組/我的預測)
 ```
 
 ### 狀態管理策略
@@ -370,17 +523,47 @@ App (主容器，管理全域狀態)
 
 ```typescript
 // App.tsx 中的主要狀態
-const [activeTab, setActiveTab] = useState<Tab>('analysis');
-const [selectedSport, setSelectedSport] = useState('全部');
-const [groupMessage, setGroupMessage] = useState('');
-const [contextMenu, setContextMenu] = useState<ContextMenuState>(null);
-const [userName, setUserName] = useState('用戶名稱');
-const [isAdmin] = useState(true);
-const [showKeyboard, setShowKeyboard] = useState(false);
-const [activeChatRoom, setActiveChatRoom] = useState<string | null>(null);
-const [notifications, setNotifications] = useState<Notification[]>(notificationsData);
-const [showNotifications, setShowNotifications] = useState(false);
-const [selectedAnalysis, setSelectedAnalysis] = useState<Analysis | null>(null); // 新增：選中的分析
+const [activeTab, setActiveTab] = useState('analysis');  // 當前分頁
+const [selectedSport, setSelectedSport] = useState('all');  // 選中的運動類型
+const [groupMessage, setGroupMessage] = useState('');  // 群組訊息輸入
+const [contextMenu, setContextMenu] = useState<{x: number, y: number, messageId: number} | null>(null);
+const [userName, setUserName] = useState('運彩新手');  // 使用者名稱
+const [isAdmin] = useState(true);  // 管理員狀態
+const [showKeyboard, setShowKeyboard] = useState(false);  // 虛擬鍵盤顯示
+const [activeChatRoom, setActiveChatRoom] = useState<number | null>(null);  // 當前聊天室
+const [notifications, setNotifications] = useState(notificationsData);  // 通知列表
+const [showNotifications, setShowNotifications] = useState(false);  // 通知面板顯示
+const [selectedAnalysis, setSelectedAnalysis] = useState<Analysis | null>(null);  // 選中的分析
+const [selectedScore, setSelectedScore] = useState<ScoreData | null>(null);  // 選中的賽事
+const [userPredictions, setUserPredictions] = useState<UserPrediction[]>([]);  // 使用者預測記錄
+const [showProfileMenu, setShowProfileMenu] = useState(false);  // 個人設定選單顯示
+```
+
+**預測功能的狀態管理：**
+```typescript
+// 提交預測的處理函式
+const handleSubmitPrediction = (score: ScoreData, predictions: { type: PredictionType; option: BetOption }[]) => {
+  const existingPredictionIndex = userPredictions.findIndex(p => p.matchId === score.id);
+
+  const newPrediction: UserPrediction = {
+    id: existingPredictionIndex >= 0 ? userPredictions[existingPredictionIndex].id : `pred_${Date.now()}`,
+    matchId: score.id,
+    match: score,
+    predictions: predictions,
+    createdAt: new Date().toISOString(),
+    status: score.status
+  };
+
+  if (existingPredictionIndex >= 0) {
+    // 更新現有預測
+    setUserPredictions(prev =>
+      prev.map((p, i) => i === existingPredictionIndex ? newPrediction : p)
+    );
+  } else {
+    // 新增預測
+    setUserPredictions(prev => [...prev, newPrediction]);
+  }
+};
 ```
 
 **為何不使用 Redux/Zustand？**
@@ -1023,20 +1206,36 @@ function AnalysisSection() {
 
 ---
 
-## 🔄 版本歷程（依 Git 提交）
+## 🔄 主要功能開發歷程
 
-| Commit | 說明 | 日期 |
-|--------|------|------|
-| 97b8da3 | 修正通知面板定位：限制在 App 容器內 | - |
-| 1fab7ef | 新增通知面板功能 | - |
-| d48cb87 | 更新 logo 顯示：支援 URL 圖片 | - |
-| f329047 | 步驟6：整合所有功能到 App.tsx | - |
-| 080c729 | 步驟5：更新 Header（通知鈴鐺）+ BottomNavigation（賽事圖標） | - |
-| 25a0503 | 步驟4：更新群組專區（聊天室列表） | - |
-| 38a2cfc | 步驟3：更新分析專區（日期篩選 + 推薦標籤） | - |
-| 6e0284c | 步驟2：新增賽事專區元件 | - |
-| 6c597e3 | 步驟1：更新資料結構（types + data） | - |
-| 1a8934c | 初始提交：基礎版本 | - |
+### 最新更新（2025-10-25）
+- **Header 重新設計**：頭像移至左側、通知鈴鐺右側、移除標題文字
+- **導航架構調整**：個人中心移至 Header，底部導航改為「我的預測」
+
+### 預測系統（2025-10-25）
+- 新增完整預測功能（讓分盤、不讓分、大小分、單雙）
+- 實作 ScoreDetail 預測頁面（選擇介面、賠率顯示）
+- 新增 MyPredictions 預測記錄與勝率統計
+- 新增 ProfileMenu 個人設定側滑選單
+- 更新底部導航：新增「我的預測」分頁
+
+### 分析詳細頁面
+- 實作點擊分析卡片查看完整內容
+- 新增 AnalysisDetail 全螢幕詳細頁面
+- 移除觀看數顯示（列表與詳細頁）
+
+### 日期系統更新
+- 將日期篩選從「昨天/今天/明天」改為「今天/明天/後天」
+- 更新所有相關元件與模擬資料
+
+### 早期版本
+- 97b8da3：修正通知面板定位（限制在 App 容器內）
+- 1fab7ef：新增通知面板功能
+- d48cb87：更新 logo 顯示（支援 URL 圖片）
+- f329047：整合所有功能到 App.tsx
+- 38a2cfc：更新分析專區（日期篩選 + 推薦標籤）
+- 6e0284c：新增賽事專區元件
+- 1a8934c：初始提交
 
 ---
 
@@ -1062,6 +1261,32 @@ function AnalysisSection() {
 
 ---
 
-**文件版本：** 1.0
+## 📋 功能清單總覽
+
+### 核心功能（已實作）
+- ✅ 分析專區（瀏覽、篩選、詳細頁面）
+- ✅ 賽事專區（即時比分、多層篩選）
+- ✅ 預測系統（四種預測類型、賠率顯示）
+- ✅ 我的預測（記錄管理、勝率統計）
+- ✅ 群組聊天（聊天室、訊息、虛擬鍵盤）
+- ✅ 通知系統（面板、未讀標記）
+- ✅ 個人設定（使用者資訊、通知設定）
+
+### 資料篩選功能
+- ✅ 運動類型篩選（NBA、足球、棒球、網球）
+- ✅ 日期篩選（今天、明天、後天）
+- ✅ 聯盟篩選（依運動類型動態變化）
+
+### UI/UX 特色
+- ✅ 暗色主題設計
+- ✅ 響應式卡片佈局
+- ✅ 全螢幕詳細頁面
+- ✅ 即時狀態標籤（Live、Final、Scheduled）
+- ✅ 視覺化進度條（信心指數、預測百分比）
+- ✅ 互動式選單（右鍵選單、側滑面板）
+
+---
+
+**文件版本：** 2.0
 **最後更新：** 2025-10-25
 **維護者：** Claude AI Assistant
