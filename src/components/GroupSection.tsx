@@ -1,0 +1,126 @@
+import React, { useState } from 'react';
+import { Users, Send, Search, BookOpen, MoreVertical, Image, FileText, ExternalLink, Shield, UserCog } from 'lucide-react';
+import { GroupMessage } from './GroupMessage';
+import { getGroupMessages } from '../data';
+
+interface GroupSectionProps {
+  userName: string;
+  isAdmin: boolean;
+  groupMessage: string;
+  setGroupMessage: (message: string) => void;
+  setShowKeyboard: (show: boolean) => void;
+  handleContextMenu: (e: React.MouseEvent, messageId: number) => void;
+}
+
+export const GroupSection: React.FC<GroupSectionProps> = ({
+  userName,
+  isAdmin,
+  groupMessage,
+  setGroupMessage,
+  setShowKeyboard,
+  handleContextMenu
+}) => {
+  const [groupMenu, setGroupMenu] = useState(false);
+  const groupMessages = getGroupMessages(userName);
+
+  const handleSendMessage = () => {
+    if (groupMessage.trim()) {
+      console.log("Sending message:", groupMessage);
+      setGroupMessage('');
+    }
+  };
+
+  const handleGroupMenuAction = (action: string) => {
+    alert(`你點擊了 "${action}"`);
+    setGroupMenu(false);
+  };
+
+  return (
+    <div>
+      <div className="bg-gray-800 rounded-lg shadow-md mb-4 border border-gray-700">
+        {/* Group Header with Functions */}
+        <div className="flex items-center justify-between p-4 border-b border-gray-700">
+          <div className="flex items-center space-x-3">
+            <h2 className="text-lg font-bold text-gray-100">盈吉多討論群</h2>
+            <div className="flex items-center space-x-1 text-sm text-gray-400">
+              <Users className="w-4 h-4" />
+              <span>1,234人</span>
+            </div>
+          </div>
+          <div className="flex items-center space-x-2">
+            <button className="p-2 hover:bg-gray-700 rounded">
+              <Search className="w-5 h-5 text-gray-400" />
+            </button>
+            <button className="p-2 hover:bg-gray-700 rounded">
+              <BookOpen className="w-5 h-5 text-gray-400" />
+            </button>
+            <div className="relative">
+              <button 
+                onClick={() => setGroupMenu(!groupMenu)}
+                className="p-2 hover:bg-gray-700 rounded"
+              >
+                <MoreVertical className="w-5 h-5 text-gray-400" />
+              </button>
+              {groupMenu && (
+                <div className="absolute right-0 mt-2 w-48 bg-gray-800 border border-gray-600 rounded-lg shadow-lg z-50">
+                  <button onClick={() => handleGroupMenuAction('照片/影片')} className="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center space-x-2 text-gray-200">
+                    <Image className="w-4 h-4" />
+                    <span>照片/影片</span>
+                  </button>
+                  <button onClick={() => handleGroupMenuAction('檔案')} className="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center space-x-2 text-gray-200">
+                    <FileText className="w-4 h-4" />
+                    <span>檔案</span>
+                  </button>
+                  <button onClick={() => handleGroupMenuAction('連結')} className="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center space-x-2 text-gray-200">
+                    <ExternalLink className="w-4 h-4" />
+                    <span>連結</span>
+                  </button>
+                  {isAdmin && (
+                    <>
+                      <hr className="border-gray-600 my-1" />
+                      <button onClick={() => handleGroupMenuAction('管理員設定')} className="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center space-x-2 text-gray-200">
+                        <Shield className="w-4 h-4" />
+                        <span>管理員設定</span>
+                      </button>
+                    </>
+                  )}
+                  <button onClick={() => handleGroupMenuAction('詳細設定')} className="w-full text-left px-4 py-2 hover:bg-gray-700 flex items-center space-x-2 text-gray-200">
+                    <UserCog className="w-4 h-4" />
+                    <span>詳細設定</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+        
+        {/* Messages Area */}
+        <div className="max-h-96 overflow-y-auto p-4">
+          {groupMessages.map(message => (
+            <GroupMessage key={message.id} message={message} onContextMenu={handleContextMenu} />
+          ))}
+        </div>
+
+        {/* Input Area */}
+        <div className="flex items-center space-x-2 border-t border-gray-700 p-3">
+          <input
+            type="text"
+            value={groupMessage}
+            onChange={(e) => setGroupMessage(e.target.value)}
+            onFocus={() => setShowKeyboard(true)}
+            onBlur={() => setTimeout(() => setShowKeyboard(false), 200)}
+            placeholder="輸入訊息..."
+            className="flex-1 border border-gray-600 rounded-full px-4 py-2 text-sm focus:outline-none focus:border-gray-500 bg-gray-700 text-gray-100 placeholder-gray-400"
+            onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+          />
+          <button
+            onClick={handleSendMessage}
+            className="bg-gray-600 text-gray-100 rounded-full p-2 hover:bg-gray-500"
+          >
+            <Send className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};

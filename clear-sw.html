@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Clear Service Worker</title>
+</head>
+<body>
+    <h1>清除 Service Worker</h1>
+    <button onclick="clearServiceWorker()">清除 Service Worker</button>
+    <div id="status"></div>
+    
+    <script>
+        async function clearServiceWorker() {
+            const statusDiv = document.getElementById('status');
+            
+            // 取消註冊所有 Service Workers
+            if ('serviceWorker' in navigator) {
+                const registrations = await navigator.serviceWorker.getRegistrations();
+                for(let registration of registrations) {
+                    await registration.unregister();
+                    console.log('Service worker unregistered:', registration);
+                }
+                statusDiv.innerHTML += '<p>✅ Service Workers 已清除</p>';
+            }
+            
+            // 清除所有快取
+            if ('caches' in window) {
+                const cacheNames = await caches.keys();
+                await Promise.all(
+                    cacheNames.map(cacheName => {
+                        console.log('Deleting cache:', cacheName);
+                        return caches.delete(cacheName);
+                    })
+                );
+                statusDiv.innerHTML += '<p>✅ 快取已清除</p>';
+            }
+            
+            statusDiv.innerHTML += '<p>✅ 完成！現在可以關閉此頁面並返回應用程式</p>';
+        }
+        
+        // 自動執行清除
+        window.onload = () => {
+            clearServiceWorker();
+        };
+    </script>
+</body>
+</html>
