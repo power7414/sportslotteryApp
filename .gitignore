@@ -26,3 +26,12 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
+
+# Video files (screen recordings)
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.webm
+*.flv
+*.wmv
