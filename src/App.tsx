@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { AnalysisSection } from './components/AnalysisSection';
+import { ScoresSection } from './components/ScoresSection';
 import { GroupSection } from './components/GroupSection';
 import { ProfileSection } from './components/ProfileSection';
+import { Header } from './components/Header';
 import { BottomNavigation } from './components/BottomNavigation';
 import { ContextMenu } from './components/ContextMenu';
 import { Keyboard } from './components/Keyboard';
@@ -15,6 +17,8 @@ const SportsApp = () => {
   const [userName, setUserName] = useState('運彩新手');
   const [isAdmin] = useState(true);
   const [showKeyboard, setShowKeyboard] = useState(false);
+  const [activeChatRoom, setActiveChatRoom] = useState<number | null>(null);
+  const [hasNotifications, setHasNotifications] = useState(true);
 
   const handleContextMenu = (e: React.MouseEvent, messageId: number) => {
     e.preventDefault();
@@ -34,11 +38,13 @@ const SportsApp = () => {
     switch (activeTab) {
       case 'analysis':
         return (
-          <AnalysisSection 
+          <AnalysisSection
             selectedSport={selectedSport}
             setSelectedSport={setSelectedSport}
           />
         );
+      case 'scores':
+        return <ScoresSection />;
       case 'group':
         return (
           <GroupSection
@@ -48,6 +54,8 @@ const SportsApp = () => {
             setGroupMessage={setGroupMessage}
             setShowKeyboard={setShowKeyboard}
             handleContextMenu={handleContextMenu}
+            activeChatRoom={activeChatRoom}
+            setActiveChatRoom={setActiveChatRoom}
           />
         );
       case 'profile':
@@ -65,18 +73,19 @@ const SportsApp = () => {
   return (
     <div className="max-w-md mx-auto bg-gray-900 min-h-screen relative text-gray-100">
       {/* Header */}
-      <div className="bg-gray-800 text-gray-100 p-4 border-b border-gray-700">
-        <h1 className="text-xl font-bold text-center">盈吉多社群</h1>
-      </div>
+      <Header
+        hasNotifications={hasNotifications}
+        onNotificationClick={() => setHasNotifications(false)}
+      />
 
       {/* Content */}
-      <div className={`flex-1 p-4 ${activeTab === 'group' && showKeyboard ? 'pb-80' : 'pb-20'}`}>
+      <div className={`flex-1 p-4 ${activeTab === 'group' && activeChatRoom && showKeyboard ? 'pb-80' : 'pb-20'}`}>
         {renderContent()}
       </div>
 
       {/* Virtual Keyboard */}
-      {activeTab === 'group' && showKeyboard && (
-        <Keyboard 
+      {activeTab === 'group' && activeChatRoom && showKeyboard && (
+        <Keyboard
           keyboardKeys={keyboardKeys}
           onKeyPress={(key) => setGroupMessage(prev => prev + key)}
           onBackspace={() => setGroupMessage(prev => prev.slice(0, -1))}
