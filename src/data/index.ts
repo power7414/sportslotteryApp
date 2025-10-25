@@ -122,8 +122,8 @@ export const scoresData: ScoreData[] = [
     league: "美國職籃",
     homeTeam: "湖人",
     awayTeam: "勇士",
-    homeLogo: "🏀",
-    awayLogo: "🏀",
+    homeLogo: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Los_Angeles_Lakers_logo.svg/250px-Los_Angeles_Lakers_logo.svg.png",
+    awayLogo: "https://upload.wikimedia.org/wikipedia/zh/d/da/Golden_State_Warriors.png",
     homeScore: 108,
     awayScore: 102,
     status: "live",
@@ -139,37 +139,37 @@ export const scoresData: ScoreData[] = [
     id: 2,
     sport: "NBA",
     league: "美國職籃",
-    homeTeam: "快艇",
-    awayTeam: "太陽",
-    homeLogo: "🏀",
-    awayLogo: "🏀",
+    homeTeam: "賽爾提克",
+    awayTeam: "獨行俠",
+    homeLogo: "https://upload.wikimedia.org/wikipedia/zh/thumb/f/f5/Boston_Celtics.png/250px-Boston_Celtics.png",
+    awayLogo: "https://upload.wikimedia.org/wikipedia/en/thumb/9/97/Dallas_Mavericks_logo.svg/1200px-Dallas_Mavericks_logo.svg.png",
     homeScore: 0,
     awayScore: 0,
     status: "scheduled",
     time: "21:00",
     date: dateKeys.tomorrow,
-    spread: "快艇 -5.5",
+    spread: "賽提 -5.5",
     prediction: {
-      option: "快艇 -5.5",
-      percentage: 72
+      option: "賽提 -5.5",
+      percentage: 60
     }
   },
   {
     id: 3,
     sport: "NBA",
     league: "美國職籃",
-    homeTeam: "公鹿",
-    awayTeam: "熱火",
-    homeLogo: "🏀",
-    awayLogo: "🏀",
+    homeTeam: "湖人",
+    awayTeam: "勇士",
+    homeLogo: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Los_Angeles_Lakers_logo.svg/250px-Los_Angeles_Lakers_logo.svg.png",
+    awayLogo: "https://upload.wikimedia.org/wikipedia/zh/d/da/Golden_State_Warriors.png",
     homeScore: 115,
     awayScore: 110,
     status: "final",
     time: "Final",
     date: dateKeys.yesterday,
-    spread: "公鹿 -4.5",
+    spread: "湖人 -4.5",
     prediction: {
-      option: "公鹿 -4.5",
+      option: "湖人 -4.5",
       percentage: 65
     }
   },
@@ -179,8 +179,8 @@ export const scoresData: ScoreData[] = [
     league: "英超",
     homeTeam: "曼城",
     awayTeam: "阿森納",
-    homeLogo: "⚽",
-    awayLogo: "⚽",
+    homeLogo: "https://upload.wikimedia.org/wikipedia/zh/thumb/e/eb/Manchester_City_FC_badge.svg/1200px-Manchester_City_FC_badge.svg.png",
+    awayLogo: "https://upload.wikimedia.org/wikipedia/en/thumb/5/53/Arsenal_FC.svg/800px-Arsenal_FC.svg.png",
     homeScore: 2,
     awayScore: 1,
     status: "live",
@@ -198,8 +198,8 @@ export const scoresData: ScoreData[] = [
     league: "MLB",
     homeTeam: "道奇",
     awayTeam: "教士",
-    homeLogo: "⚾",
-    awayLogo: "⚾",
+    homeLogo: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Los_Angeles_Dodgers_Logo.svg/1158px-Los_Angeles_Dodgers_Logo.svg.png",
+    awayLogo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/San_Diego_Padres_logo.svg/250px-San_Diego_Padres_logo.svg.png",
     homeScore: 4,
     awayScore: 3,
     status: "final",
@@ -217,39 +217,39 @@ export const scoresData: ScoreData[] = [
 export const chatRoomsData: ChatRoom[] = [
   {
     id: 1,
-    name: "NBA討論區",
-    avatar: "🏀",
-    lastMessage: "湖人今晚穩了",
+    name: "運彩討論群",
+    avatar: "🏆",
+    lastMessage: "我覺得可以關注主隊優勢",
     lastTime: "10:42",
-    unread: 5,
-    members: 1250
+    unread: 2,
+    members: 1234
   },
   {
     id: 2,
-    name: "足球分析群",
-    avatar: "⚽",
-    lastMessage: "曼城進攻太猛了",
-    lastTime: "10:35",
-    unread: 0,
-    members: 890
-  },
-  {
-    id: 3,
-    name: "棒球同好會",
-    avatar: "⚾",
-    lastMessage: "道奇投手表現優秀",
-    lastTime: "昨天",
+    name: "NBA 專屬群",
+    avatar: "https://images.seeklogo.com/logo-png/24/1/nba-logo-png_seeklogo-247736.png",
+    lastMessage: "今晚勇士場大家怎麼看？",
+    lastTime: "9:15",
     unread: 0,
     members: 456
   },
   {
+    id: 3,
+    name: "足球交流區",
+    avatar: "https://upload.wikimedia.org/wikipedia/zh/thumb/f/f2/Premier_League_Logo.svg/1200px-Premier_League_Logo.svg.png",
+    lastMessage: "曼城那場可惜了...",
+    lastTime: "昨天",
+    unread: 5,
+    members: 789
+  },
+  {
     id: 4,
-    name: "新手交流區",
-    avatar: "🔰",
-    lastMessage: "有人能教我怎麼看盤嗎？",
-    lastTime: "09:20",
-    unread: 12,
-    members: 2340
+    name: "棒球 MLB/CPBL",
+    avatar: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Major_League_Baseball_logo.svg/640px-Major_League_Baseball_logo.svg.png",
+    lastMessage: "道奇投手狀況不錯",
+    lastTime: "昨天",
+    unread: 1,
+    members: 321
   }
 ];
 
