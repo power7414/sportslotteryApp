@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Users, Send, Search, BookOpen, MoreVertical, Image, FileText, ExternalLink, Shield, UserCog } from 'lucide-react';
+import { Users, Send, Search, BookOpen, MoreVertical, Image, FileText, ExternalLink, Shield, UserCog, ChevronLeft } from 'lucide-react';
 import { GroupMessage } from './GroupMessage';
-import { getGroupMessages } from '../data';
+import { ChatRoomList } from './ChatRoomList';
+import { getGroupMessages, chatRoomsData } from '../data';
 
 interface GroupSectionProps {
   userName: string;
@@ -10,6 +11,8 @@ interface GroupSectionProps {
   setGroupMessage: (message: string) => void;
   setShowKeyboard: (show: boolean) => void;
   handleContextMenu: (e: React.MouseEvent, messageId: number) => void;
+  activeChatRoom: number | null;
+  setActiveChatRoom: (roomId: number | null) => void;
 }
 
 export const GroupSection: React.FC<GroupSectionProps> = ({
@@ -18,10 +21,13 @@ export const GroupSection: React.FC<GroupSectionProps> = ({
   groupMessage,
   setGroupMessage,
   setShowKeyboard,
-  handleContextMenu
+  handleContextMenu,
+  activeChatRoom,
+  setActiveChatRoom
 }) => {
   const [groupMenu, setGroupMenu] = useState(false);
   const groupMessages = getGroupMessages(userName);
+  const currentRoom = chatRoomsData.find(r => r.id === activeChatRoom);
 
   const handleSendMessage = () => {
     if (groupMessage.trim()) {
@@ -35,16 +41,29 @@ export const GroupSection: React.FC<GroupSectionProps> = ({
     setGroupMenu(false);
   };
 
+  // 如果沒有選擇聊天室，顯示聊天室列表
+  if (!activeChatRoom) {
+    return <ChatRoomList onSelectRoom={setActiveChatRoom} />;
+  }
+
+  // 顯示單一聊天室
   return (
     <div>
       <div className="bg-gray-800 rounded-lg shadow-md mb-4 border border-gray-700">
         {/* Group Header with Functions */}
         <div className="flex items-center justify-between p-4 border-b border-gray-700">
           <div className="flex items-center space-x-3">
-            <h2 className="text-lg font-bold text-gray-100">盈吉多討論群</h2>
+            {/* 返回按鈕 */}
+            <button
+              onClick={() => setActiveChatRoom(null)}
+              className="p-1 hover:bg-gray-700 rounded"
+            >
+              <ChevronLeft className="w-5 h-5 text-gray-400" />
+            </button>
+            <h2 className="text-lg font-bold text-gray-100">{currentRoom?.name || '聊天室'}</h2>
             <div className="flex items-center space-x-1 text-sm text-gray-400">
               <Users className="w-4 h-4" />
-              <span>1,234人</span>
+              <span>{currentRoom?.members || 0}人</span>
             </div>
           </div>
           <div className="flex items-center space-x-2">
