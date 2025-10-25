@@ -1,5 +1,5 @@
 import React from 'react';
-import { TrendingUp, MessageCircle, User } from 'lucide-react';
+import { TrendingUp, MessageCircle, User, Trophy } from 'lucide-react';
 
 interface BottomNavigationProps {
   activeTab: string;
@@ -21,7 +21,19 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab, s
           <TrendingUp className="w-5 h-5 mx-auto mb-1" />
           <span className="text-xs">分析專區</span>
         </button>
-        
+
+        <button
+          onClick={() => setActiveTab('scores')}
+          className={`flex-1 py-3 px-4 text-center ${
+            activeTab === 'scores'
+              ? 'text-gray-200 bg-gray-700'
+              : 'text-gray-400 hover:text-gray-200'
+          }`}
+        >
+          <Trophy className="w-5 h-5 mx-auto mb-1" />
+          <span className="text-xs">賽事專區</span>
+        </button>
+
         <button
           onClick={() => setActiveTab('group')}
           className={`flex-1 py-3 px-4 text-center ${
@@ -33,7 +45,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab, s
           <MessageCircle className="w-5 h-5 mx-auto mb-1" />
           <span className="text-xs">群組專區</span>
         </button>
-        
+
         <button
           onClick={() => setActiveTab('profile')}
           className={`flex-1 py-3 px-4 text-center ${
