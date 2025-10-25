@@ -26,7 +26,7 @@ export const GroupSection: React.FC<GroupSectionProps> = ({
   setActiveChatRoom
 }) => {
   const [groupMenu, setGroupMenu] = useState(false);
-  const groupMessages = getGroupMessages(userName);
+  const groupMessages = getGroupMessages(userName, activeChatRoom);
   const currentRoom = chatRoomsData.find(r => r.id === activeChatRoom);
 
   const handleSendMessage = () => {
@@ -46,19 +46,19 @@ export const GroupSection: React.FC<GroupSectionProps> = ({
     return <ChatRoomList onSelectRoom={setActiveChatRoom} />;
   }
 
-  // 顯示單一聊天室
+  // 顯示單一聊天室（滿版設計）
   return (
-    <div>
-      <div className="bg-gray-800 rounded-lg shadow-md mb-4 border border-gray-700">
-        {/* Group Header with Functions */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-700">
+    <div className="absolute inset-0 bg-gray-900 z-50 flex flex-col">
+      {/* Group Header with Functions */}
+      <div className="sticky top-0 bg-gray-800 border-b border-gray-700 px-4 py-3 z-10">
+        <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             {/* 返回按鈕 */}
             <button
               onClick={() => setActiveChatRoom(null)}
-              className="p-1 hover:bg-gray-700 rounded"
+              className="p-2 hover:bg-gray-700 rounded-full transition-colors"
             >
-              <ChevronLeft className="w-5 h-5 text-gray-400" />
+              <ChevronLeft className="w-5 h-5 text-gray-100" />
             </button>
             <h2 className="text-lg font-bold text-gray-100">{currentRoom?.name || '聊天室'}</h2>
             <div className="flex items-center space-x-1 text-sm text-gray-400">
@@ -67,16 +67,16 @@ export const GroupSection: React.FC<GroupSectionProps> = ({
             </div>
           </div>
           <div className="flex items-center space-x-2">
-            <button className="p-2 hover:bg-gray-700 rounded">
+            <button className="p-2 hover:bg-gray-700 rounded-full transition-colors">
               <Search className="w-5 h-5 text-gray-400" />
             </button>
-            <button className="p-2 hover:bg-gray-700 rounded">
+            <button className="p-2 hover:bg-gray-700 rounded-full transition-colors">
               <BookOpen className="w-5 h-5 text-gray-400" />
             </button>
             <div className="relative">
-              <button 
+              <button
                 onClick={() => setGroupMenu(!groupMenu)}
-                className="p-2 hover:bg-gray-700 rounded"
+                className="p-2 hover:bg-gray-700 rounded-full transition-colors"
               >
                 <MoreVertical className="w-5 h-5 text-gray-400" />
               </button>
@@ -112,16 +112,18 @@ export const GroupSection: React.FC<GroupSectionProps> = ({
             </div>
           </div>
         </div>
-        
-        {/* Messages Area */}
-        <div className="max-h-96 overflow-y-auto p-4">
-          {groupMessages.map(message => (
-            <GroupMessage key={message.id} message={message} onContextMenu={handleContextMenu} />
-          ))}
-        </div>
+      </div>
 
-        {/* Input Area */}
-        <div className="flex items-center space-x-2 border-t border-gray-700 p-3">
+      {/* Messages Area - 自動填滿剩餘空間 */}
+      <div className="flex-1 overflow-y-auto p-4 bg-gray-900">
+        {groupMessages.map(message => (
+          <GroupMessage key={message.id} message={message} onContextMenu={handleContextMenu} />
+        ))}
+      </div>
+
+      {/* Input Area - 固定在底部 */}
+      <div className="sticky bottom-0 bg-gray-800 border-t border-gray-700 px-4 py-3">
+        <div className="flex items-center space-x-2">
           <input
             type="text"
             value={groupMessage}
@@ -130,11 +132,11 @@ export const GroupSection: React.FC<GroupSectionProps> = ({
             onBlur={() => setTimeout(() => setShowKeyboard(false), 200)}
             placeholder="輸入訊息..."
             className="flex-1 border border-gray-600 rounded-full px-4 py-2 text-sm focus:outline-none focus:border-gray-500 bg-gray-700 text-gray-100 placeholder-gray-400"
-            onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+            onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
           />
           <button
             onClick={handleSendMessage}
-            className="bg-gray-600 text-gray-100 rounded-full p-2 hover:bg-gray-500"
+            className="bg-blue-600 text-white rounded-full p-2 hover:bg-blue-700 transition-colors"
           >
             <Send className="w-4 h-4" />
           </button>

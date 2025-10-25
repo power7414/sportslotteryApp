@@ -1,12 +1,13 @@
 import { useState } from 'react';
-import { Edit2, Settings, Link, LogOut } from 'lucide-react';
+import { Edit2, Settings, Link, LogOut, ArrowLeft } from 'lucide-react';
 
 interface ProfileSectionProps {
   userName: string;
   setUserName: (name: string) => void;
+  onBack: () => void;
 }
 
-export function ProfileSection({ userName, setUserName }: ProfileSectionProps) {
+export function ProfileSection({ userName, setUserName, onBack }: ProfileSectionProps) {
   const [isEditingName, setIsEditingName] = useState(false);
   const [newUserName, setNewUserName] = useState(userName);
 
@@ -16,8 +17,20 @@ export function ProfileSection({ userName, setUserName }: ProfileSectionProps) {
   };
 
   return (
-    <div className="h-full overflow-y-auto pb-20">
-      <div className="p-4 space-y-4">
+    <div className="absolute inset-0 bg-gray-900 z-50 overflow-y-auto">
+      {/* 頂部導航列 */}
+      <div className="sticky top-0 bg-gray-800 border-b border-gray-700 px-4 py-3 flex items-center gap-3 z-10">
+        <button
+          onClick={onBack}
+          className="p-2 hover:bg-gray-700 rounded-full transition-colors"
+        >
+          <ArrowLeft size={24} className="text-gray-100" />
+        </button>
+        <h2 className="text-lg font-semibold flex-1 text-gray-100">個人中心</h2>
+      </div>
+
+      {/* 內容區 */}
+      <div className="px-4 py-4 pb-20 space-y-4">
         {/* 個人資訊卡片 */}
         <div className="bg-gray-800 rounded-lg p-4 border border-gray-700">
           <div className="text-center mb-4">

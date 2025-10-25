@@ -149,24 +149,6 @@ export function AnalysisDetail({ analysis, onBack }: AnalysisDetailProps) {
           </div>
         </div>
 
-        {/* 統計數據 */}
-        <div className="grid grid-cols-2 gap-3 mb-4">
-          <div className="p-3 bg-gray-800 rounded-lg text-center border border-gray-700">
-            <div className="flex items-center justify-center gap-1 text-gray-400 mb-1">
-              <Heart size={16} />
-            </div>
-            <div className="text-xl font-semibold text-gray-100">{analysis.likes}</div>
-            <div className="text-xs text-gray-400">按讚</div>
-          </div>
-          <div className="p-3 bg-gray-800 rounded-lg text-center border border-gray-700">
-            <div className="flex items-center justify-center gap-1 text-gray-400 mb-1">
-              <Share2 size={16} />
-            </div>
-            <div className="text-xl font-semibold text-gray-100">{Math.floor(analysis.views * 0.1)}</div>
-            <div className="text-xs text-gray-400">分享</div>
-          </div>
-        </div>
-
         {/* 互動提示 */}
         <div className="p-4 bg-blue-900 rounded-lg border border-blue-700 text-sm">
           <p className="font-medium mb-1 text-blue-300">風險提示</p>

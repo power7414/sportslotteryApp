@@ -94,13 +94,86 @@ export const analysisData: Analysis[] = [
   }
 ];
 
-export const getGroupMessages = (userName: string): GroupMessageData[] => [
-  { id: 1, user: "運彩高手", avatar: "🏆", message: "今天湖人的分析很不錯！", time: "10:30", isCurrentUser: false },
-  { id: 2, user: userName, avatar: "👤", message: "我也覺得很有道理", time: "10:32", isCurrentUser: true },
-  { id: 3, user: "籃球專家王大明", avatar: "👨‍💼", message: "謝謝大家的支持！", time: "10:35", isCurrentUser: false },
-  { id: 4, user: "新手小白", avatar: "🔰", message: "請問大家怎麼看今晚的比賽？", time: "10:40", isCurrentUser: false },
-  { id: 5, user: userName, avatar: "👤", message: "我覺得可以關注主隊優勢", time: "10:42", isCurrentUser: true }
-];
+// 根據聊天室 ID 返回對應的訊息內容
+export const getGroupMessages = (userName: string, roomId?: number | null): GroupMessageData[] => {
+  // 預設返回運彩討論群的內容（roomId === 1 或未指定）
+  if (!roomId || roomId === 1) {
+    return [
+      { id: 1, user: "運彩高手", avatar: "🏆", message: "今天湖人的分析很不錯！", time: "10:30", isCurrentUser: false },
+      { id: 2, user: userName, avatar: "👤", message: "我也覺得很有道理", time: "10:32", isCurrentUser: true },
+      { id: 3, user: "籃球專家王大明", avatar: "👨‍💼", message: "謝謝大家的支持！", time: "10:35", isCurrentUser: false },
+      { id: 4, user: "新手小白", avatar: "🔰", message: "請問大家怎麼看今晚的比賽？", time: "10:40", isCurrentUser: false },
+      { id: 5, user: userName, avatar: "👤", message: "我覺得可以關注主隊優勢", time: "10:42", isCurrentUser: true }
+    ];
+  }
+
+  // NBA 專屬群（roomId === 2）
+  if (roomId === 2) {
+    return [
+      { id: 1, user: "NBA鐵粉", avatar: "🏀", message: "今晚勇士場大家怎麼看？", time: "09:00", isCurrentUser: false },
+      { id: 2, user: "數據派", avatar: "📊", message: "我來分享一下數據分析", time: "09:05", isCurrentUser: false },
+      {
+        id: 3,
+        user: "數據派",
+        avatar: "📊",
+        message: "分享了一篇分析",
+        time: "09:06",
+        isCurrentUser: false,
+        sharedAnalysis: analysisData[2]  // 勇士隊三分球數據分析
+      },
+      { id: 4, user: userName, avatar: "👤", message: "這個分析很專業！", time: "09:10", isCurrentUser: true },
+      { id: 5, user: "籃球迷", avatar: "⛹️", message: "勇士三分球確實穩", time: "09:12", isCurrentUser: false },
+      { id: 6, user: "運彩老手", avatar: "🎯", message: "我也跟這個分析", time: "09:15", isCurrentUser: false },
+      { id: 7, user: userName, avatar: "👤", message: "信心指數 92% 很高啊", time: "09:18", isCurrentUser: true }
+    ];
+  }
+
+  // 足球交流區（roomId === 3）
+  if (roomId === 3) {
+    return [
+      { id: 1, user: "足球分析師李小華", avatar: "👩‍💼", message: "大家好，今天來分析一下英超", time: "14:20", isCurrentUser: false },
+      {
+        id: 2,
+        user: "足球分析師李小華",
+        avatar: "👩‍💼",
+        message: "分享了一篇分析",
+        time: "14:21",
+        isCurrentUser: false,
+        sharedAnalysis: analysisData[1]  // 曼城 vs 阿森納分析
+      },
+      { id: 3, user: "英超迷", avatar: "⚽", message: "李老師的分析一向準確", time: "14:25", isCurrentUser: false },
+      { id: 4, user: userName, avatar: "👤", message: "這場比賽我也看好大球", time: "14:28", isCurrentUser: true },
+      { id: 5, user: "戰術狂", avatar: "📋", message: "兩隊對攻會很精彩", time: "14:30", isCurrentUser: false },
+      { id: 6, user: "曼城球迷", avatar: "💙", message: "曼城最近攻擊力爆棚", time: "14:35", isCurrentUser: false },
+      { id: 7, user: userName, avatar: "👤", message: "但阿森納防守也不錯", time: "14:40", isCurrentUser: true },
+      { id: 8, user: "足球分析師李小華", avatar: "👩‍💼", message: "所以這場會是精彩對決！", time: "14:42", isCurrentUser: false }
+    ];
+  }
+
+  // 棒球 MLB/CPBL（roomId === 4）
+  if (roomId === 4) {
+    return [
+      { id: 1, user: "棒球專家陳教練", avatar: "⚾", message: "來聊聊道奇這場比賽", time: "22:10", isCurrentUser: false },
+      {
+        id: 2,
+        user: "棒球專家陳教練",
+        avatar: "⚾",
+        message: "分享了一篇分析",
+        time: "22:11",
+        isCurrentUser: false,
+        sharedAnalysis: analysisData[3]  // 道奇 vs 教士分析
+      },
+      { id: 3, user: "MLB迷", avatar: "🧢", message: "投手戰確實精彩", time: "22:15", isCurrentUser: false },
+      { id: 4, user: userName, avatar: "👤", message: "兩隊投手狀態都很好", time: "22:18", isCurrentUser: true },
+      { id: 5, user: "數據控", avatar: "📈", message: "看數據也支持小分", time: "22:20", isCurrentUser: false },
+      { id: 6, user: "道奇球迷", avatar: "⚾", message: "道奇投手狀況不錯", time: "22:25", isCurrentUser: false },
+      { id: 7, user: userName, avatar: "👤", message: "這場我會跟陳教練的建議", time: "22:30", isCurrentUser: true }
+    ];
+  }
+
+  // 預設返回空陣列
+  return [];
+};
 
 export const sportOptions: SportOption[] = [
   { value: 'all', label: '全部運動' },

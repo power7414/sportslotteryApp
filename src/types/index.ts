@@ -25,6 +25,7 @@ export interface GroupMessageData {
   message: string;
   time: string;
   isCurrentUser: boolean;
+  sharedAnalysis?: Analysis;  // 分享的分析內容（可選）
 }
 
 export interface SportOption {

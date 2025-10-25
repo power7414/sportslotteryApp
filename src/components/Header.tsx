@@ -13,7 +13,7 @@ export const Header: React.FC<HeaderProps> = ({ hasNotifications, onNotification
       {/* 頭像按鈕 - 左側 */}
       <button
         onClick={onProfileClick}
-        className="w-8 h-8 bg-gray-700 rounded-full flex items-center justify-center hover:bg-gray-600 transition-colors"
+        className="p-2 hover:bg-gray-700 rounded-full transition-colors"
       >
         <User className="w-5 h-5 text-gray-300" />
       </button>

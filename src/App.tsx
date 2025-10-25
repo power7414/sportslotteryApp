@@ -326,6 +326,7 @@ const SportsApp = () => {
   const [selectedAnalysis, setSelectedAnalysis] = useState<Analysis | null>(null);
   const [selectedScore, setSelectedScore] = useState<ScoreData | null>(null);
   const [userPredictions, setUserPredictions] = useState<UserPrediction[]>(mockUserPredictions);
+  const [showProfile, setShowProfile] = useState(false);
 
   // 計算是否有未讀通知
   const hasNotifications = notifications.some(n => !n.isRead);
@@ -384,6 +385,17 @@ const SportsApp = () => {
   };
 
   const renderContent = () => {
+    // 如果顯示個人中心，顯示全螢幕個人中心頁面
+    if (showProfile) {
+      return (
+        <ProfileSection
+          userName={userName}
+          setUserName={setUserName}
+          onBack={() => setShowProfile(false)}
+        />
+      );
+    }
+
     // 如果有選中的分析，顯示詳細頁面
     if (selectedAnalysis) {
       return (
@@ -438,13 +450,6 @@ const SportsApp = () => {
             onEditPrediction={(prediction) => setSelectedScore(prediction.match)}
           />
         );
-      case 'profile':
-        return (
-          <ProfileSection
-            userName={userName}
-            setUserName={setUserName}
-          />
-        );
       default:
         return null;
     }
@@ -456,7 +461,7 @@ const SportsApp = () => {
       <Header
         hasNotifications={hasNotifications}
         onNotificationClick={() => setShowNotifications(true)}
-        onProfileClick={() => setActiveTab('profile')}
+        onProfileClick={() => setShowProfile(true)}
       />
 
       {/* Notification Panel */}
